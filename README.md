@@ -20,7 +20,7 @@ use std::fs::File;
 use std::io;
 
 fn main() {
-    let f = fs::File::open("hello.txt").unwrap();
+    let f = File::open("hello.txt").unwrap();
     let capacity = 1024;
     ex_merge_sort::sort(f, io::stdout(), capacity).unwrap();
 }
