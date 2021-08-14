@@ -18,16 +18,22 @@ fn default_compare(a: &String, b: &String) -> Ordering {
     a.partial_cmp(b).unwrap()
 }
 
-pub fn sort<T>(
+pub fn sort<T>(fin: fs::File, fout: T, cap: u64) -> io::Result<()>
+where
+    T: io::Write,
+{
+    sort_by(fin, fout, cap, default_compare)
+}
+
+pub fn sort_by<T>(
     fin: fs::File,
     fout: T,
     cap: u64,
-    opt_cmp: Option<fn(&String, &String) -> Ordering>,
+    cmp: fn(&String, &String) -> Ordering,
 ) -> io::Result<()>
 where
     T: io::Write,
 {
-    let cmp = opt_cmp.unwrap_or(default_compare);
     let chunk = Chunk::new(fin, cap)?;
     let sorted = sort_chunk(chunk, cmp)?;
     file_utils::copy(&sorted.file, fout)
