@@ -27,7 +27,10 @@ impl Chunk {
         self.file.metadata().unwrap().len() <= self.capacity
     }
 
-    pub(super) fn sort(&self, cmp: fn(&String, &String) -> Ordering) -> io::Result<Chunk> {
+    pub(super) fn sort<F>(&self, cmp: F) -> io::Result<Chunk>
+    where
+        F: Fn(&String, &String) -> Ordering,
+    {
         let mut reader = io::BufReader::new(&self.file);
         let mut lines = vec![];
         let mut buf = String::new();

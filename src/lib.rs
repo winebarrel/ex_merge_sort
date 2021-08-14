@@ -50,21 +50,20 @@ where
     sort_by(fin, fout, cap, default_compare)
 }
 
-pub fn sort_by<T>(
-    fin: fs::File,
-    fout: T,
-    cap: u64,
-    cmp: fn(&String, &String) -> Ordering,
-) -> io::Result<()>
+pub fn sort_by<T, F>(fin: fs::File, fout: T, cap: u64, cmp: F) -> io::Result<()>
 where
     T: io::Write,
+    F: Fn(&String, &String) -> Ordering,
 {
     let chunk = Chunk::new(fin, cap)?;
-    let sorted = sort_chunk(chunk, cmp)?;
+    let sorted = sort_chunk(chunk, &cmp)?;
     file_utils::copy(&sorted.file, fout)
 }
 
-fn sort_chunk(chunk: Chunk, cmp: fn(&String, &String) -> Ordering) -> io::Result<Chunk> {
+fn sort_chunk<F>(chunk: Chunk, cmp: &F) -> io::Result<Chunk>
+where
+    F: Fn(&String, &String) -> Ordering,
+{
     if chunk.rough_count == RoughCount::Zero || chunk.rough_count == RoughCount::One {
         return Ok(chunk);
     }
@@ -82,7 +81,10 @@ fn sort_chunk(chunk: Chunk, cmp: fn(&String, &String) -> Ordering) -> io::Result
     Ok(merge(sort_chunk(c1, cmp)?, sort_chunk(c2, cmp)?, cmp)?)
 }
 
-fn merge(c1: Chunk, c2: Chunk, cmp: fn(&String, &String) -> Ordering) -> io::Result<Chunk> {
+fn merge<F>(c1: Chunk, c2: Chunk, cmp: F) -> io::Result<Chunk>
+where
+    F: Fn(&String, &String) -> Ordering,
+{
     assert!(c1.capacity == c2.capacity);
 
     let mut reader1 = io::BufReader::new(&c1.file);
