@@ -9,7 +9,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! ex_merge_sort = "0.4"
+//! ex_merge_sort = "0.5"
 //! ```
 //!
 //! ```rust
