@@ -3,8 +3,11 @@ name = "ex_merge_sort"
 version = "0.1.0"
 authors = ["winebarrel <sugawara@winebarrel.jp>"]
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+license = "MIT"
+description = "Rust external merge sort library"
+repository = "https://github.com/winebarrel/ex_merge_sort"
+documentation = "https://docs.rs/ex_merge_sort/"
+readme = "README.md"
 
 [dependencies]
 tempfile = "3"
