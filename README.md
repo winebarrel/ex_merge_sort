@@ -4,7 +4,7 @@ Rust [external merge sort](https://en.wikipedia.org/wiki/External_sorting#Extern
 
 [![Build Status](https://github.com/winebarrel/ex_merge_sort/workflows/CI/badge.svg)](https://github.com/winebarrel/ex_merge_sort/actions)
 [![crates.io](https://img.shields.io/crates/v/ex_merge_sort.svg)](https://crates.io/crates/ex_merge_sort)
-[![docs.rs](https://docs.rs/ex_ex_merge_sort/badge.svg)](https://docs.rs/ex_ex_merge_sort)
+[![docs.rs](https://docs.rs/ex_merge_sort/badge.svg)](https://docs.rs/ex_merge_sort)
 
 ## Usage
 
