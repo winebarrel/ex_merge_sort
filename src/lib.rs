@@ -52,9 +52,9 @@ fn sort_chunk(chunk: Chunk, cmp: fn(&String, &String) -> Ordering) -> io::Result
 
     if c2.rough_count == RoughCount::Zero {
         return c1.sort(cmp);
-    } else {
-        Ok(merge(sort_chunk(c1, cmp)?, sort_chunk(c2, cmp)?, cmp)?)
     }
+
+    Ok(merge(sort_chunk(c1, cmp)?, sort_chunk(c2, cmp)?, cmp)?)
 }
 
 fn merge(c1: Chunk, c2: Chunk, cmp: fn(&String, &String) -> Ordering) -> io::Result<Chunk> {
