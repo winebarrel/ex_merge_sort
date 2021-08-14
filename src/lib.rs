@@ -37,53 +37,52 @@ use std::fs;
 use std::io;
 use std::io::Write;
 
-fn default_compare(a: &String, b: &String) -> Ordering {
-    let a = a.trim_end_matches(|c| c == '\r' || c == '\n');
-    let b = b.trim_end_matches(|c| c == '\r' || c == '\n');
-    a.partial_cmp(b).unwrap()
-}
-
 pub fn sort<T>(fin: fs::File, fout: T, cap: u64) -> io::Result<()>
 where
     T: io::Write,
 {
-    sort_by(fin, fout, cap, default_compare)
+    sort_by_key(fin, fout, cap, |s| {
+        s.trim_end_matches(|c| c == '\r' || c == '\n').to_string()
+    })
 }
 
-pub fn sort_by<T, F>(fin: fs::File, fout: T, cap: u64, cmp: F) -> io::Result<()>
+pub fn sort_by_key<T, F, K>(fin: fs::File, fout: T, cap: u64, conv: F) -> io::Result<()>
 where
     T: io::Write,
-    F: Fn(&String, &String) -> Ordering,
+    F: Fn(&String) -> K,
+    K: Ord,
 {
     let chunk = Chunk::new(fin, cap)?;
-    let sorted = sort_chunk(chunk, &cmp)?;
+    let sorted = sort_chunk(chunk, &conv)?;
     file_utils::copy(&sorted.file, fout)
 }
 
-fn sort_chunk<F>(chunk: Chunk, cmp: &F) -> io::Result<Chunk>
+fn sort_chunk<F, K>(chunk: Chunk, conv: &F) -> io::Result<Chunk>
 where
-    F: Fn(&String, &String) -> Ordering,
+    F: Fn(&String) -> K,
+    K: Ord,
 {
     if chunk.rough_count == RoughCount::Zero || chunk.rough_count == RoughCount::One {
         return Ok(chunk);
     }
 
     if chunk.fit_in_buffer() {
-        return chunk.sort(cmp);
+        return chunk.sort(conv);
     }
 
     let (c1, c2) = chunk.split()?;
 
     if c2.rough_count == RoughCount::Zero {
-        return c1.sort(cmp);
+        return c1.sort(conv);
     }
 
-    Ok(merge(sort_chunk(c1, cmp)?, sort_chunk(c2, cmp)?, cmp)?)
+    Ok(merge(sort_chunk(c1, conv)?, sort_chunk(c2, conv)?, conv)?)
 }
 
-fn merge<F>(c1: Chunk, c2: Chunk, cmp: F) -> io::Result<Chunk>
+fn merge<F, K>(c1: Chunk, c2: Chunk, conv: F) -> io::Result<Chunk>
 where
-    F: Fn(&String, &String) -> Ordering,
+    F: Fn(&String) -> K,
+    K: Ord,
 {
     assert!(c1.capacity == c2.capacity);
 
@@ -94,19 +93,23 @@ where
     let mut r2_buf = String::new();
 
     let mut r1_read = reader1.read_line(&mut r1_buf)?;
+    let mut r1_key = conv(&r1_buf);
     let mut r2_read = reader2.read_line(&mut r2_buf)?;
+    let mut r2_key = conv(&r2_buf);
 
     while r1_read > 0 && r2_read > 0 {
-        if cmp(&r1_buf, &r2_buf) == Ordering::Less {
-            // r1_buf < r2_buf
+        if r1_key.partial_cmp(&r2_key).unwrap() == Ordering::Less {
+            // r1_key < r2_key
             writer.write(&r1_buf.as_bytes())?;
             r1_buf.clear();
-            r1_read = reader1.read_line(&mut r1_buf)?
+            r1_read = reader1.read_line(&mut r1_buf)?;
+            r1_key = conv(&r1_buf);
         } else {
             // r1_buf >= r2_buf
             writer.write(&r2_buf.as_bytes())?;
             r2_buf.clear();
-            r2_read = reader2.read_line(&mut r2_buf)?
+            r2_read = reader2.read_line(&mut r2_buf)?;
+            r2_key = conv(&r2_buf);
         }
     }
 

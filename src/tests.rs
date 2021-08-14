@@ -1,5 +1,4 @@
 use super::sort;
-use super::sort_by;
 use std::io;
 use std::io::Seek;
 use std::io::Write;
@@ -137,52 +136,6 @@ fn test_sort_three_lines() {
 
     assert_eq!(
         "五劫の擦り切れ、\n寿限無、寿限無、\n海砂利水魚の、\n",
-        str::from_utf8(&buf).unwrap()
-    );
-}
-
-#[test]
-fn test_sort_desc() {
-    let mut fin = tempfile::tempfile().unwrap();
-    write!(
-        fin,
-        "寿限無、寿限無、
-五劫の擦り切れ、
-海砂利水魚の、
-水行末・雲来末・風来末、
-喰う寝る処に住む処、
-藪ら柑子の藪柑子、
-パイポ・パイポ・パイポのシューリンガン、
-シューリンガンのグーリンダイ、
-グーリンダイのポンポコピーのポンポコナの、
-長久命の長助
-"
-    )
-    .unwrap();
-    fin.seek(io::SeekFrom::Start(0)).unwrap();
-    let mut buf = Vec::new();
-    let fout = Box::new(&mut buf);
-
-    let cmp = |a: &String, b: &String| {
-        let a = a.trim_end_matches(|c| c == '\r' || c == '\n');
-        let b = b.trim_end_matches(|c| c == '\r' || c == '\n');
-        b.partial_cmp(a).unwrap()
-    };
-
-    sort_by(fin, fout, 50, cmp).unwrap();
-
-    assert_eq!(
-        "長久命の長助
-藪ら柑子の藪柑子、
-海砂利水魚の、
-水行末・雲来末・風来末、
-寿限無、寿限無、
-喰う寝る処に住む処、
-五劫の擦り切れ、
-パイポ・パイポ・パイポのシューリンガン、
-シューリンガンのグーリンダイ、
-グーリンダイのポンポコピーのポンポコナの、
-",
         str::from_utf8(&buf).unwrap()
     );
 }

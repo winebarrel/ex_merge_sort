@@ -1,7 +1,6 @@
 use super::file_utils;
 use file_utils::RoughCount;
 use io::prelude::BufRead;
-use std::cmp::Ordering;
 use std::fs;
 use std::io;
 use std::io::Write;
@@ -27,9 +26,10 @@ impl Chunk {
         self.file.metadata().unwrap().len() <= self.capacity
     }
 
-    pub(super) fn sort<F>(&self, cmp: F) -> io::Result<Chunk>
+    pub(super) fn sort<F, K>(&self, conv: F) -> io::Result<Chunk>
     where
-        F: Fn(&String, &String) -> Ordering,
+        F: Fn(&String) -> K,
+        K: Ord,
     {
         let mut reader = io::BufReader::new(&self.file);
         let mut lines = vec![];
@@ -40,7 +40,8 @@ impl Chunk {
             buf.clear();
         }
 
-        lines.sort_unstable_by(cmp);
+        lines.sort_by_cached_key(conv);
+
         let mut writer = io::BufWriter::new(tempfile::tempfile()?);
 
         for l in lines {
