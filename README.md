@@ -2,6 +2,7 @@
 
 Rust [external merge sort](https://en.wikipedia.org/wiki/External_sorting#External_merge_sort) library.
 
+[![crates.io](https://img.shields.io/crates/v/ex_merge_sort.svg)](https://crates.io/crates/ex_merge_sort)
 [![Build Status](https://github.com/winebarrel/ex_merge_sort/workflows/CI/badge.svg)](https://github.com/winebarrel/ex_merge_sort/actions)
 
 ## Usage
