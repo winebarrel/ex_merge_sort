@@ -2,6 +2,8 @@
 
 Rust [external merge sort](https://en.wikipedia.org/wiki/External_sorting#External_merge_sort) library.
 
+[![Build Status](https://github.com/winebarrel/ex_merge_sort/workflows/CI/badge.svg)](https://github.com/winebarrel/ex_merge_sort/actions)
+
 ## Usage
 
 ```toml
