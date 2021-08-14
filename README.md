@@ -15,13 +15,11 @@ ex_merge_sort = "0.3"
 ```
 
 ```rust
-use ex_merge_sort;
-
 use std::fs::File;
 use std::io;
 
 fn main() {
-    let f = File::open("hello.txt").unwrap();
+    let f = File::open("README.md").unwrap();
     let capacity = 1024;
     ex_merge_sort::sort(f, io::stdout(), capacity).unwrap();
 }
