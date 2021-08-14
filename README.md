@@ -10,7 +10,7 @@ Rust [external merge sort](https://en.wikipedia.org/wiki/External_sorting#Extern
 
 ```toml
 [dependencies]
-ex_merge_sort = "0.3.0"
+ex_merge_sort = "0.3.1"
 ```
 
 ```rust
