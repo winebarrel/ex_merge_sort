@@ -6,14 +6,14 @@ use std::fs;
 use std::io;
 use std::io::Write;
 
-pub struct Chunk {
-    pub file: fs::File,
-    pub capacity: u64,
-    pub rough_count: file_utils::RoughCount,
+pub(super) struct Chunk {
+    pub(super) file: fs::File,
+    pub(super) capacity: u64,
+    pub(super) rough_count: file_utils::RoughCount,
 }
 
 impl Chunk {
-    pub fn new(f: fs::File, cap: u64) -> io::Result<Chunk> {
+    pub(super) fn new(f: fs::File, cap: u64) -> io::Result<Chunk> {
         let rc = file_utils::count_roughly(&f)?;
 
         Ok(Chunk {
@@ -23,11 +23,11 @@ impl Chunk {
         })
     }
 
-    pub fn fit_in_buffer(&self) -> bool {
+    pub(super) fn fit_in_buffer(&self) -> bool {
         self.file.metadata().unwrap().len() <= self.capacity
     }
 
-    pub fn sort(&self, cmp: fn(&String, &String) -> Ordering) -> io::Result<Chunk> {
+    pub(super) fn sort(&self, cmp: fn(&String, &String) -> Ordering) -> io::Result<Chunk> {
         let mut reader = io::BufReader::new(&self.file);
         let mut lines = vec![];
         let mut buf = String::new();
@@ -49,7 +49,7 @@ impl Chunk {
         Chunk::new(file, self.capacity)
     }
 
-    pub fn split(&self) -> io::Result<(Chunk, Chunk)> {
+    pub(super) fn split(&self) -> io::Result<(Chunk, Chunk)> {
         assert!(self.rough_count == RoughCount::Two || self.rough_count == RoughCount::ThreeOrMore);
 
         let mid = self.file.metadata().unwrap().len() / 2;

@@ -5,14 +5,14 @@ use std::io::Seek;
 use std::io::Write;
 
 #[derive(Debug, PartialEq)]
-pub enum RoughCount {
+pub(crate) enum RoughCount {
     Zero,
     One,
     Two,
     ThreeOrMore,
 }
 
-pub fn count_roughly(f: &fs::File) -> io::Result<RoughCount> {
+pub(crate) fn count_roughly(f: &fs::File) -> io::Result<RoughCount> {
     let mut reader = io::BufReader::new(f);
     let mut buf = String::new();
     let mut n = 0;
@@ -39,11 +39,11 @@ pub fn count_roughly(f: &fs::File) -> io::Result<RoughCount> {
     Ok(rc)
 }
 
-pub fn rewind(mut f: &fs::File) -> io::Result<u64> {
+pub(crate) fn rewind(mut f: &fs::File) -> io::Result<u64> {
     f.seek(io::SeekFrom::Start(0))
 }
 
-pub fn copy<T>(fin: &fs::File, fout: T) -> io::Result<()>
+pub(crate) fn copy<T>(fin: &fs::File, fout: T) -> io::Result<()>
 where
     T: io::Write,
 {
