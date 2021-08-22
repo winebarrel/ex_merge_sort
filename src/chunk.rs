@@ -27,7 +27,7 @@ impl Chunk {
         self.file.metadata().unwrap().len() <= self.capacity
     }
 
-    pub(super) fn sort<F>(&self, cmp: F) -> io::Result<Chunk>
+    pub(super) fn sort<F>(&self, cmp: &F) -> io::Result<Chunk>
     where
         F: Fn(&String, &String) -> Ordering,
     {

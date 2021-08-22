@@ -81,7 +81,7 @@ where
     Ok(merge(sort_chunk(c1, cmp)?, sort_chunk(c2, cmp)?, cmp)?)
 }
 
-fn merge<F>(c1: Chunk, c2: Chunk, cmp: F) -> io::Result<Chunk>
+fn merge<F>(c1: Chunk, c2: Chunk, cmp: &F) -> io::Result<Chunk>
 where
     F: Fn(&String, &String) -> Ordering,
 {
