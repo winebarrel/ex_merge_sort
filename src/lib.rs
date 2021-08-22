@@ -101,25 +101,25 @@ where
             // r1_buf < r2_buf
             writer.write(&r1_buf.as_bytes())?;
             r1_buf.clear();
-            r1_read = reader1.read_line(&mut r1_buf)?
+            r1_read = reader1.read_line(&mut r1_buf)?;
         } else {
             // r1_buf >= r2_buf
             writer.write(&r2_buf.as_bytes())?;
             r2_buf.clear();
-            r2_read = reader2.read_line(&mut r2_buf)?
+            r2_read = reader2.read_line(&mut r2_buf)?;
         }
     }
 
     while r1_read > 0 {
         writer.write(&r1_buf.as_bytes())?;
         r1_buf.clear();
-        r1_read = reader1.read_line(&mut r1_buf)?
+        r1_read = reader1.read_line(&mut r1_buf)?;
     }
 
     while r2_read > 0 {
         writer.write(&r2_buf.as_bytes())?;
         r2_buf.clear();
-        r2_read = reader2.read_line(&mut r2_buf)?
+        r2_read = reader2.read_line(&mut r2_buf)?;
     }
 
     let cap = c1.capacity;
