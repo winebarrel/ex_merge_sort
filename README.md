@@ -24,3 +24,7 @@ fn main() {
     ex_merge_sort::sort(f, io::stdout(), capacity).unwrap();
 }
 ```
+
+## Related Links
+
+* https://github.com/winebarrel/ex_merge_sort_by_key
